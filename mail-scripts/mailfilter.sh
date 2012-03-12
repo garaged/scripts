@@ -6,6 +6,6 @@ do
   date
   num=$RANDOM
   let "num %= $RANGE"
-  if [ $num -ge 90 ]; then offlineimap; notmuch new; fi
+  if [ $num -ge 95 ]; then offlineimap -c imapfilter.lua; notmuch new; fi
   sleep 240
 done
