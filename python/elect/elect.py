@@ -14,14 +14,16 @@ def parseArgs():
   parser = argparse.ArgumentParser(description='voting simulator')
   parser.add_argument('-f', '--file', dest='filename', default=None,
       help='Reads a file to parse.', required=True)
+  parser.add_argument('-s', '--style', dest='style', default='total',
+      help='output style: total, percent. Default is total.', required=False, choices=['total', 'percent'])
   return parser.parse_args()
 
-def Count(file):
+def Count(args):
   global Config
   part = {}
   set = {}
   Config = ConfigParser.ConfigParser()
-  Config.read(file)
+  Config.read(args.filename)
   parties = Config.sections()
   for item in parties:
     part[item] = ConfigSectionMap(item)
@@ -56,8 +58,10 @@ def Count(file):
     if ( count >= int(main['cnt']) ):
       out = `tot/float(main['loops'])`+","
       for k in part.keys():
-        #out += "{0},".format(100*(float( part[k]['votes']) / tot ))
-        out += "{0},".format(part[k]['votes'])
+        if args.style == 'total':
+          out += "{0},".format(100*(float( part[k]['votes']) / tot ))
+        elif args.style == 'percent':
+          out += "{0},".format(part[k]['votes'])
       print out
       count = 0
   #print part
@@ -82,7 +86,7 @@ def rand_elect():
 
 def main():
   args = parseArgs()
-  Count(args.filename)
+  Count(args)
 
 if __name__ == '__main__':
   main();
