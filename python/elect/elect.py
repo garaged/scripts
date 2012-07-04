@@ -2,6 +2,7 @@
 import argparse
 import ConfigParser
 from random import *
+import math
 import sys
 
 
@@ -44,8 +45,10 @@ def Count(args):
     count = 0
     tot = 0
   head = 'step,'
+  List = {}
   for k in part.keys():
     head += "{0},".format(k)
+    List[k] = []
   print head
   for x in xrange(int(main['loops'])):
     count += 1
@@ -58,13 +61,16 @@ def Count(args):
     if ( count >= int(main['cnt']) ):
       out = `tot/float(main['loops'])`+","
       for k in part.keys():
+        List[k].insert(len(List[k]),int(part[k]['votes']))
         if args.style == 'total':
-          out += "{0},".format(100*(float( part[k]['votes']) / tot ))
-        elif args.style == 'percent':
           out += "{0},".format(part[k]['votes'])
-      print out
+        elif args.style == 'percent':
+          out += "{0},".format(100*(float( part[k]['votes']) / tot ))
       count = 0
-  #print part
+      if x > 10:
+        p = pearson(List['PRD'], List['PRI'])
+        out += "{0},".format(p)
+      print out
 
 def ConfigSectionMap(section):
   dict1 = {}
@@ -83,6 +89,33 @@ def ConfigSectionMap(section):
 def rand_elect():
   return random()
 
+
+def pearson(X,Y):
+  if len(X) != len(Y):
+    print "none matching lists"
+    #print len(X), len(Y)
+  X_s = 0
+  Y_s = 0
+  # get averages
+  for i in range(len(X)):
+    X_s += X[i]
+    Y_s += Y[i]
+  X_a = X_s/len(X)
+  Y_a = Y_s/len(Y)
+  C=0
+  X_2 = 0
+  Y_2 = 0
+  for i in range(len(X)):
+    # Convariance
+    C += (X[i]-X_a)*(Y[i]-Y_a)
+    # Squares
+    X_2 += (X[i]-X_a)**2
+    Y_2 += (Y[i]-Y_a)**2
+
+  P = 0
+  if X_2 * Y_2 > 0:
+    P = C/(math.sqrt(X_2)*math.sqrt(Y_2))
+  return P
 
 def main():
   args = parseArgs()
