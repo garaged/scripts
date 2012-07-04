@@ -29,6 +29,7 @@ def Count(args):
   for item in parties:
     part[item] = ConfigSectionMap(item)
   main = part['main']
+  pearson_pairs = main['pearson'].split(',')
   del part['main']
   sum = 0
   for k in part.keys():
@@ -49,6 +50,8 @@ def Count(args):
   for k in part.keys():
     head += "{0},".format(k)
     List[k] = []
+  for p in pearson_pairs:
+    head += "{0},".format(p)
   print head
   for x in xrange(int(main['loops'])):
     count += 1
@@ -67,9 +70,11 @@ def Count(args):
         elif args.style == 'percent':
           out += "{0},".format(100*(float( part[k]['votes']) / tot ))
       count = 0
-      if x > 10:
-        p = pearson(List['PRD'], List['PRI'])
-        out += "{0},".format(p)
+      if x > 2:
+        for p in pearson_pairs:
+          [p1,p2] = p.split('-')
+          p = pearson(List[p1], List[p2])
+          out += "{0},".format(p)
       print out
 
 def ConfigSectionMap(section):
@@ -92,7 +97,7 @@ def rand_elect():
 
 def pearson(X,Y):
   if len(X) != len(Y):
-    print "none matching lists"
+    print "non matching lists"
     #print len(X), len(Y)
   X_s = 0
   Y_s = 0
