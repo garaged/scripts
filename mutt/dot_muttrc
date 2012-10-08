@@ -1,0 +1,58 @@
+#macro index <f2> '<change-folder>imaps://MValdez@mail.example.com<enter>'
+#macro index <f3> '<change-folder>imaps://mvg@mazatl.cie.unam.mx<enter>'
+
+# switch to default account on startup
+source ~/.mutt/account.cie
+
+set editor=vim
+set ssl_starttls=yes
+set header_cache="/home/max/muttcache"
+set message_cachedir="/home/max/muttcache_msg"
+mime_lookup application/octet-stream
+#set implicit_autoview
+auto_view text/html application/x-pgp-message
+macro index \cb |urlview\n
+macro pager \cb |urlview\n
+set date_format="!%a, %b %d, %Y at %I:%M:%S%p %Z"
+#set index_format="%4C %Z %{%b %d} %-15.15L (%4l) %s"
+set index_format="%4C %Z %[%d-%b-%y %R] %-15.15L (%4l) %s"
+set mail_check=120
+set timeout=60
+set edit_headers = yes
+set askcc=yes
+set beep_new=yes
+#source ~/.mutt/mutt-colors-solarized/mutt-colors-solarized-light-16.muttrc
+color hdrdefault white black  # headers white on black
+color header brightgreen black ^From:  # sender's name in green
+color quoted cyan black  # quoted text in blue
+color signature red black   # signature in red
+set signature="~/.signature"
+color index green  black ~N  # new
+color index red black ~D  # deleted
+color index brightmagenta black ~T  # tagged
+color index brightyellow black ~F  # flagged
+
+set query_command="abook --mutt-query '%s'"
+#set query_command="~/bin/ldap.pl '%s'"
+macro generic,index,pager \ca "<shell-escape>abook<return>" "launch abook"
+macro index,pager A "<pipe-message>abook --add-email<return>" "add the sender address to abook"
+
+source ~/.mutt/gpg.rc
+set pgp_autosign
+set pgp_replysign
+set pgp_replyencrypt
+
+set followup_to=no
+set honor_followup_to=no
+set pager_index_lines=10
+
+bind index  ,\t      previous-unread
+bind pager  ,\t      previous-unread
+
+macro index <F8> \
+  "<enter-command>unset wait_key<enter><shell-escape>~/bin/mutt-notmuch --prompt search<enter><change-folder-readonly>~/.cache/mutt_results<enter>" \
+   "search mail (using notmuch)"
+macro index <F9> \
+    "<enter-command>unset wait_key<enter><pipe-message>~/bin/mutt-notmuch thread<enter><change-folder-readonly>~/.cache/mutt_results<enter><enter-command>set wait_key<enter>" \
+    "search and reconstruct owning thread (using notmuch)"
+set wait_key=no

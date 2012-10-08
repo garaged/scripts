@@ -1,0 +1,19 @@
+source ~/.mutt/passwd.cie
+set from=mvg@cie.unam.mx
+set realname="Maximiliano Valdez"
+set use_from=yes
+set hostname="mazatl.cie.unam.mx"
+set folder="imaps://mvg@mazatl.cie.unam.mx/"
+mailboxes =INBOX
+mailboxes =Sent
+mailboxes =Servers
+mailboxes =Trash
+#mailboxes =Drafts
+set postponed="=Drafts"
+set spoolfile="imaps://mvg@mazatl.cie.unam.mx/INBOX"
+set smtp_url = "smtps://mvg@mazatl.cie.unam.mx"
+#set signature="~/.mutt/signature.otherdomain"
+alternates max@cie.unam.mx
+alternates garaged@cie.unam.mx
+mailboxes =INBOX
+set ssl_min_dh_prime_bits = 500

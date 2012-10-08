@@ -1,0 +1,2 @@
+set imap_pass='secretword'
+set smtp_pass='secretword'
